@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% include 'nav.html' %}
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Show Data Page</h5>
+            <form method="POST">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Search</label>
+                <input type="text" class="form-control" value="" required name="collage_name" id="exampleInputEmail1" aria-describedby="emailHelp" />
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Total Count Card -->
+      <div class="col-md-4 d-flex justify-content-center">
+        <div class="card text-center rounded">
+          <div class="card-header card-title-bg text-center bg-warning">
+            <h5 class="card-title">Total Count</h5>
+          </div>
+          <div class="card-body bg-success text-white">
+            <p class="card-text display-4">{{ rowsCount }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- All Collage Name -->
+      <div class="col-md-4">
+        <div class="card rounded">
+          <div class="card-header card-title-bg bg-warning">
+            <h5 class="card-title text-center">Collage Name</h5>
+          </div>
+          <div class="card-body bg-success text-white">
+            {% for a in labels %}
+              <ul>
+                <li style="list-style-type: none; ">
+                  <i class="bi bi-arrow-right-square-fill">&nbsp;{{ a }}</i>
+                </li>
+              </ul>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <br />
+
+    <div class="col-md-12 table-responsive" style="overflow-x: auto">
+      <table class="table table-hover rounded">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Sr.No</th>
+            <th scope="col">DB-ID</th>
+            <th scope="col">Collage Name</th>
+            <th scope="col">Collage Branch</th>
+            <th scope="col">Student Name</th>
+            <th scope="col">Student Age</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in mydbdata %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ a.id }}</td>
+              <td>{{ a.collage_name_id }}</td>
+              <td>{{ a.branch_name_id }}</td>
+              <td>{{ a.student_name }}</td>
+              <td>{{ a.student_age }}</td>
+
+              <td>
+                <!-- update/{{ a.id }}" -->
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#update{{ a.id }}"><i class="bi bi-pencil-square"></i></button>
+
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#del{{ a.id }}"><i class="bi bi-trash"></i></button>
+              </td>
+            </tr>
+
+            <form method="POST" action="#">
+              {% csrf_token %}
+              <div class="modal fade" id="update{{ a.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Update title</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="title" value="{{ a.title }}" id="title" required id="exampleInputEmail1" aria-describedby="emailHelp" />
+                      </div>
+                      <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" id="description" required id="exampleInputPassword1">{{ a.description }}</textarea>
+                      </div>
+
+                      <div class="flex">
+                        <a href="#" class="btn btn-success" id="mybtn">Submit</a>
+                        <button type="submit" class="btn btn-danger" id="mybtn">Submit</button>
+                        &nbsp; &nbsp;{% comment %} <input type="reset" class="btn btn-danger" /> {% endcomment %}
+                        <button type="reset" class="btn btn-warning">Reset</button>
+                        &nbsp; &nbsp;
+                      </div>
+                    </div>
+                    {% comment %} <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div> {% endcomment %}
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- Defining the model to Delete the data from main table row -->
+            <div class="modal fade" id="del{{ a.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="del{{ a.id }}">Are You Sure Want To Delete?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">Delete this Document</div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal2" onclick="myfunc()">Delete</button> -->
+                    <a href="#" class="btn btn-primary">Delete</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Second Modal for deletionmessage -->
+            <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModal2">Document is Deleted Successfully</h5>
+                  </div>
+                  <div class="modal-body">
+                    <p>Document is Deleted Successfully</p>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- <a href="deleteData/{{ a.id }}" class="btn btn-primary">Close</a> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <hr />
+
+    <br />
+    <div class="row d-flex justify-content-around mb-5">
+      <div class="col-md-4" style="background-color: aliceblue;">
+        <div class="mx-auto">
+          <p>Student Addmission Chart Collage</p>
+          <div class="chart-container">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <p>Column2</p>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </div>
+
+  <!-- Chart js code -->
+  <script>
+    const ctx = document.getElementById('myChart')
+    const x = {{ labels|safe }};
+    const y = {{ data |safe }};
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: x,
+        datasets: [
+          {
+            label: 'Total Students in Each College',
+            data: y,
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    })
+  </script>
+{% endblock %}
